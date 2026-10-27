@@ -16,7 +16,14 @@ permissions:
 jobs:
   changelog_modification_consistency:
     name: CHANGELOG.md needs to be modified if indicated
+<<<<<<< HEAD
     if: (github.event.pull_request.user.login != 'dependabot[bot]') && (github.event.pull_request.user.login != 'renovate-bot')
+=======
+    if: >-
+      (github.event.pull_request.user.login != 'dependabot[bot]') &&
+      (github.event.pull_request.user.login != 'renovate-bot') &&
+      !startsWith(github.event.pull_request.title, '[Port to ')
+>>>>>>> ab33f7f415 (Move the release branch to JabRef/jabref-black-forest (#17606))
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
