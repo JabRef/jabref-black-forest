@@ -171,15 +171,10 @@ jobs:
       - name: Cherry-pick into a port PR
         if: steps.target.outputs.exists == 'true'
         id: port
-        uses: korthout/backport-action@2e830a1d0b8269505846ddd407a70876913ad1f8 # v4.6.0
+        uses: korthout/backport-action@8560fb503c275d433c56f05a2f64850093baa9f7 # v4.7.0
         with:
-<<<<<<< HEAD
-          # A PAT, so that CI runs on the port PR and jabref-machine (another account) can approve it
-          github_token: ${{ secrets.GH_TOKEN_UPDATE_GRADLE_WRAPPER }}
-=======
           # jabref-machine's PAT: it has to push to the other repository, and CI runs on the port PR
           github_token: ${{ secrets.GH_TOKEN_JABREF_MACHINE_PR_APPROVE }}
->>>>>>> ab33f7f415 (Move the release branch to JabRef/jabref-black-forest (#17606))
           target_branches: ${{ env.TARGET }}
           # The target comes from the base branch and the label above, not from "backport <branch>" labels
           label_pattern: ^()$
@@ -196,15 +191,10 @@ jobs:
       - name: Auto-merge a clean port
         if: steps.port.outputs.was_successful == 'true'
         env:
-<<<<<<< HEAD
-          # jabref-machine's token: "On PR labeled" only fires for labels added with a PAT, and it approves as jabref-machine
-          GH_TOKEN: ${{ secrets.GH_TOKEN_JABREF_MACHINE_PR_APPROVE }}
-=======
           # The port PR lives in the other repository, where only the PAT has rights. The label
           # triggers "On PR labeled" there, which approves the port and enables auto-merge.
           GH_TOKEN: ${{ secrets.GH_TOKEN_JABREF_MACHINE_PR_APPROVE }}
           GH_REPO: JabRef/${{ env.TARGET_REPO }}
->>>>>>> ab33f7f415 (Move the release branch to JabRef/jabref-black-forest (#17606))
           CREATED: ${{ steps.port.outputs.created_pull_numbers }}
         run: |
           for pr in $CREATED; do

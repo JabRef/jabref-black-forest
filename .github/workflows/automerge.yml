@@ -71,12 +71,8 @@ jobs:
         env:
           GH_TOKEN: ${{secrets.GH_TOKEN_JABREF_MACHINE_PR_APPROVE}}
       - name: Approve PR
-<<<<<<< HEAD
-        if: steps.shouldrun.outputs.shouldrun == 'true'
-=======
         # jabref-machine cannot approve its own PRs (ports); on-pr-labeled.yml approves those
         if: steps.shouldrun.outputs.shouldrun == 'true' && github.event.pull_request.user.login != 'jabref-machine'
->>>>>>> ab33f7f415 (Move the release branch to JabRef/jabref-black-forest (#17606))
         # Guard: a push directly followed by adding the "automerge" label makes both this
         # workflow (live label query) and on-pr-labeled.yml approve — skip if an
         # un-dismissed approval by jabref-machine already exists.

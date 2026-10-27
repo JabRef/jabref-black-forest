@@ -31,10 +31,7 @@ jobs:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Approve PR
-<<<<<<< HEAD
-=======
         if: github.event.pull_request.user.login != 'jabref-machine'
->>>>>>> ab33f7f415 (Move the release branch to JabRef/jabref-black-forest (#17606))
         # Guard: automerge.yml (running for a push made just before the label was added)
         # queries labels live and may approve concurrently — skip if an un-dismissed
         # approval by jabref-machine already exists.
@@ -66,7 +63,7 @@ jobs:
     steps:
       - name: Create pr_number.txt
         run: echo "${{ github.event.pull_request.number }}" > pr_number.txt
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: pr_number
           path: pr_number.txt

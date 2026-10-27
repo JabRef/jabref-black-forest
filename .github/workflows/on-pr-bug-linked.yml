@@ -67,14 +67,9 @@ jobs:
             fi
             # GitHub stores the type name in lower case ("bug") while the issue template writes "Bug"
             if [ "$labeled" = false ] && [ "${type,,}" = "bug" ]; then
-<<<<<<< HEAD
-              gh pr edit "$PR_NUMBER" --add-label "dev: into-stable"
-              echo "Added \`dev: into-stable\`" >> "$GITHUB_STEP_SUMMARY"
-=======
               # `gh pr edit` queries fields that need the read:org scope, which the token lacks
               gh api "repos/JabRef/jabref/issues/$PR_NUMBER/labels" -f "labels[]=dev: send-to-black-forest" > /dev/null
               echo "Added \`dev: send-to-black-forest\`" >> "$GITHUB_STEP_SUMMARY"
->>>>>>> ab33f7f415 (Move the release branch to JabRef/jabref-black-forest (#17606))
               labeled=true
             fi
           done

@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   check_title_format:
-    name: PR title must not contain "issue <number>"
+    name: PR title describes the change
     if: >
       (github.event.pull_request.head.repo.full_name != github.repository) &&
       !(
@@ -30,8 +30,15 @@ jobs:
           TITLE=$(gh pr view "${{ github.event.number }}" --json title --template '{{.title}}')
           echo "Title: $TITLE"
 
-          if echo "$TITLE" | grep -Eiq 'issue ?#?[0-9]+|fix(es|ed)? ?(for ?)?#[0-9]+'; then
+          # Matches "issue 123", "issue-123", "issue_#123", "Fix for #123", "fix-for-issue-123", "Resolves #123", ...
+          if echo "$TITLE" | grep -Eiq 'issue[-_ ]?#?[0-9]+|(fix(es|ed)?|resolve[sd]?|close[sd]?)[-_ ]?(for[-_ ]?)?#[0-9]+'; then
             echo "❌ Title references an issue number instead of describing the change — not allowed."
+            exit 1
+          fi
+
+          # A title without any whitespace is a single word or a branch name (e.g., "fix-for-issue-123") — not a description
+          if ! echo "$TITLE" | grep -q '[[:space:]]'; then
+            echo "❌ Title looks like a branch name or a single word instead of describing the change — not allowed."
             exit 1
           fi
 
@@ -75,20 +82,10 @@ jobs:
 
   mandatory-checks-section-exists:
     if: >
-<<<<<<< HEAD
-      (github.event.pull_request.head.repo.full_name != 'JabRef/jabref') &&
-=======
       (github.event.pull_request.head.repo.full_name != github.repository) &&
       !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association) &&
->>>>>>> ab33f7f415 (Move the release branch to JabRef/jabref-black-forest (#17606))
       !(
-        (github.event.pull_request.user.login == 'dependabot[bot]') || (github.event.pull_request.user.login == 'renovate-bot') ||
-        (
-          startsWith(github.event.pull_request.title, '[Bot] ') ||
-          startsWith(github.event.pull_request.title, 'Bump ') ||
-          startsWith(github.event.pull_request.title, 'New Crowdin updates') ||
-          startsWith(github.event.pull_request.title, 'Update Gradle Wrapper from')
-        )
+        (github.event.pull_request.user.login == 'dependabot[bot]') || (github.event.pull_request.user.login == 'renovate-bot')
       )
     name: Mandatory Checklist present
     runs-on: ubuntu-slim
@@ -156,8 +153,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
 
-<<<<<<< HEAD
-=======
   license-checked:
     if: >
       (github.event.pull_request.head.repo.full_name != github.repository) &&
@@ -209,13 +204,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
 
->>>>>>> ab33f7f415 (Move the release branch to JabRef/jabref-black-forest (#17606))
   upload-pr-number:
     runs-on: ubuntu-slim
     steps:
       - name: Create pr_number.txt
         run: echo "${{ github.event.number }}" > pr_number.txt
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: pr_number
           path: pr_number.txt
