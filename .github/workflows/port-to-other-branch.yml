@@ -179,15 +179,35 @@ jobs:
           # A PR branch usually contains merges from main; the squash commit is what gets ported
           merge_commits: skip
           experimental: >
+<<<<<<< HEAD
             {"conflict_resolution": "draft_commit_conflicts"}
       - name: Auto-merge a clean port
         if: steps.port.outputs.was_successful == 'true'
         env:
           # jabref-machine's token: "On PR labeled" only fires for labels added with a PAT, and it approves as jabref-machine
           GH_TOKEN: ${{ secrets.GH_TOKEN_JABREF_MACHINE_PR_APPROVE }}
+=======
+            {"conflict_resolution": "draft_commit_conflicts", "downstream_repo": "${{ env.TARGET_REPO }}"}
+      - name: Label the port PR
+        if: steps.target.outputs.exists == 'true'
+        env:
+          # The port PR lives in the other repository, where only the PAT has rights; labels go through
+          # `gh api`, because `gh pr edit` needs the read:org scope the token lacks. The "automerge"
+          # label triggers "On PR labeled" there, which approves the port and enables auto-merge.
+          GH_TOKEN: ${{ secrets.GH_TOKEN_JABREF_MACHINE_PR_APPROVE }}
+          TARGET_FULL: JabRef/${{ env.TARGET_REPO }}
+>>>>>>> c4015fc23d (Tell a conflicting port from a clean one by its draft state (#17609))
           CREATED: ${{ steps.port.outputs.created_pull_numbers }}
         run: |
+          set -euo pipefail
+          if [ -z "$CREATED" ]; then
+            echo "❌ No port PR was opened for #$PR_NUMBER" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          # The action also reports a committed conflict as successful; the draft state tells them apart
+          conflict=false
           for pr in $CREATED; do
+<<<<<<< HEAD
             gh pr edit "$pr" --add-label automerge
             echo "✅ Port PR #$pr opened with auto-merge" >> "$GITHUB_STEP_SUMMARY"
           done
@@ -202,3 +222,15 @@ jobs:
           done
           echo "❌ Port of #$PR_NUMBER to \`$TARGET\` conflicts - resolve it in the draft port PR ${CREATED:+#$CREATED}" | tee -a "$GITHUB_STEP_SUMMARY"
           exit 1
+=======
+            if [ "$(gh api "repos/$TARGET_FULL/pulls/$pr" --jq .draft)" = "true" ]; then
+              gh api "repos/$TARGET_FULL/issues/$pr/labels" -f "labels[]=status: changes-required" > /dev/null
+              echo "❌ Port of #$PR_NUMBER to \`$TARGET\` conflicts - resolve it in the draft port PR $TARGET_FULL#$pr" | tee -a "$GITHUB_STEP_SUMMARY"
+              conflict=true
+            else
+              gh api "repos/$TARGET_FULL/issues/$pr/labels" -f "labels[]=automerge" > /dev/null
+              echo "✅ Port PR $TARGET_FULL#$pr opened with auto-merge" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+          [ "$conflict" = false ]
+>>>>>>> c4015fc23d (Tell a conflicting port from a clean one by its draft state (#17609))
