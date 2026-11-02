@@ -19,7 +19,7 @@ branches:
     pre-release-weight: 50000
   # Release branch of JabRef/jabref-black-forest; that repository has no `main`, so pull requests there need it as a source
   black-forest:
-    regex: ^black-forest$
+    regex: ^(black-forest|gh-readonly-queue/black-forest/.*)$
     label: ''
     is-main-branch: true
   pull-request:

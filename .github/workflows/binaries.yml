@@ -523,6 +523,9 @@ jobs:
         with:
           fetch-depth: 0
           show-progress: 'false'
+      - name: Fetch upstream release tags
+        if: needs.conditions.outputs.should-build == 'true' && github.repository == 'JabRef/jabref-black-forest'
+        run: git fetch https://github.com/JabRef/jabref.git 'refs/tags/*:refs/tags/*'
       - name: Install GitVersion
         if: needs.conditions.outputs.should-build == 'true'
         id: pre-gitversion
