@@ -9,6 +9,10 @@ Note that this project **does not** adhere to [Semantic Versioning](https://semv
 
 ## [Unreleased]
 
+### Changed
+
+- We improved OCR failure messages to show the executed command and diagnostic output. [#16679](https://github.com/JabRef/jabref/issues/16679)
+
 ### Fixed
 
 - We fixed an issue where JabRef closed when a client of the integrated language server disconnected. [#17303](https://github.com/JabRef/jabref/pull/17303)
@@ -17,6 +21,7 @@ Note that this project **does not** adhere to [Semantic Versioning](https://semv
 - We fixed an issue where "Regenerate (custom)" in the AI summary ignored the chosen summarization algorithm. [#17216](https://github.com/JabRef/jabref/issues/17216)
 - We fixed AI summary regeneration restoring an outdated summary after a new generation started. [#17236](https://github.com/JabRef/jabref/pull/17236)
 - We fixed an issue where entries containing dollar signs, backslashes, or unset fields passed to `substring$` caused citation style preview and export to fail. [#12799](https://github.com/JabRef/jabref/issues/12799)
+- We fixed an issue where back navigation selected a deleted entry instead of skipping it. [#17353](https://github.com/JabRef/jabref/issues/17353)
 
 ## [6.0-beta.1] - 2026-09-21
 
