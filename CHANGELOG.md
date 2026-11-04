@@ -17,6 +17,7 @@ Note that this project **does not** adhere to [Semantic Versioning](https://semv
 
 - We fixed shared databases failing to open when an entry has no type. [#15658](https://github.com/JabRef/jabref/issues/15658)
 - We fixed an issue where JabRef closed when a client of the integrated language server disconnected. [#17303](https://github.com/JabRef/jabref/pull/17303)
+- We fixed linked-file full-text search results missing from the entry editor. [#17367](https://github.com/JabRef/jabref/pull/17367)
 - We fixed an issue where entries containing dollar signs or backslashes caused citation style preview and export to fail. [#12799](https://github.com/JabRef/jabref/issues/12799)
 - We fixed an issue where the Hayagriva YAML export wrote braced author names, such as company names, as invalid YAML. [#17316](https://github.com/JabRef/jabref/issues/17316)
 - We fixed an issue where entries containing dollar signs, backslashes, or unset fields passed to `substring$` caused citation style preview and export to fail. [#12799](https://github.com/JabRef/jabref/issues/12799)
