@@ -23,6 +23,7 @@ Note that this project **does not** adhere to [Semantic Versioning](https://semv
 - We fixed the BibTeX source dialog background in the Citation Relations tab for dark themes. [#13599](https://github.com/JabRef/jabref/issues/13599)
 - We fixed an issue where icons kept a large size after lowering the font size until JabRef was restarted. [#17556](https://github.com/JabRef/jabref/issues/17556)
 - We fixed an issue where "Regenerate (custom)" in the AI summary ignored the chosen summarization algorithm. [#17216](https://github.com/JabRef/jabref/issues/17216)
+- We fixed an issue where citing organisations in JStyle format was not sorting or displaying properly in LibreOffice. [#11725](https://github.com/JabRef/jabref/issues/11725)
 - We fixed AI summary regeneration restoring an outdated summary after a new generation started. [#17236](https://github.com/JabRef/jabref/pull/17236)
 - We fixed an issue where the field controls in the entry types preferences were not aligned. [#16994](https://github.com/JabRef/jabref/issues/16994)
 - We fixed an issue where back navigation selected a deleted entry instead of skipping it. [#17353](https://github.com/JabRef/jabref/issues/17353)
