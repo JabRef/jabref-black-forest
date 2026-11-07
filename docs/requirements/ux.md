@@ -191,4 +191,53 @@ The groups walkthrough must open its bundled example library, display the Groups
 
 Needs: impl
 
+<<<<<<< HEAD
+=======
+## Text editing shortcuts must respect line boundaries
+`req~ux.text-editing.line-boundaries~2`
+
+In multiline entry fields, beginning-of-line and end-of-line shortcuts move within the current newline-delimited line.
+Document navigation shortcuts continue to move to the beginning or end of the whole field.
+In entry fields and the source editor, kill-line removes text from the caret to the next newline, preserving subsequent lines.
+At a line end, kill-line removes the newline and joins the following line; at the document end, it leaves the text unchanged.
+
+Needs: impl, utest
+
+## Vertical text navigation shortcuts must move across visible lines
+`req~ux.text-editing.visual-line-navigation~1`
+
+In multiline entry fields and the source editor, up and down shortcuts move the caret to the adjacent visible line, including within wrapped text.
+
+Needs: impl, utest
+
+## Donation prompt returns every six months
+`req~ux.donation.recurring-prompt~1`
+
+JabRef asks for a donation six months after the first launch and every six months afterwards.
+Dismissing the prompt hides it until the next time; "Dismiss forever" stops it for good.
+
+Needs: impl
+## Library tab switches must preserve each library's selected groups
+`req~ux.groups.library-switch-preserves-selection~1`
+
+Rationale: The user must be able to switch between libraries and still see the same groups selected ([#1104](https://github.com/JabRef/jabref/issues/1104)).
+
+Needs: impl, utest
+
+## Shared library group updates must preserve selected groups
+`req~ux.groups.shared-update-preserves-selection~1`
+
+When a shared library receives a group-tree update, groups that remain in the updated tree must remain selected.
+
+Needs: impl, utest
+
+## Assigning an already used keyboard shortcut must require confirmation
+`req~ux.keybindings.duplicate-warning~1`
+
+When a user assigns a keyboard shortcut that is already used by other actions, JabRef warns the user, names these actions and lets the user cancel,
+keep both or replace the existing assignments ([#17240](https://github.com/JabRef/jabref/issues/17240)).
+
+Needs: impl, utest
+
+>>>>>>> c88bfa998a (fix: respect line boundaries in text input shortcuts (#17460))
 <!-- markdownlint-disable-file MD022 -->
