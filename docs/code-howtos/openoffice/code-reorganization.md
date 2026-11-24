@@ -7,18 +7,51 @@ grand_parent: Code Howtos
 
 Why
 
+<<<<<<< HEAD
 * Separate backend
 * Separate GUI code (dialogs) and logic
 * Data is now organized around `Citation`, `CitationGroup` instead of arrays for citation group fields, and arrays of arrays for citation fields.\
   Also take `citationKey` as the central data unit, this is what we start with: unresolved `citationKeys` do not stop processing. Although we cannot sort them by author and year, we can still emit a marker that acts as a placeholder and shows the user the problematic key.
+=======
+![Writer package layout and ownership](writer-package-layout.svg)
+>>>>>>> ecb8ff76cb (OpenOffice Backend re-architecture B - Package reorganization (#17918))
 
 ## Result
 
 ### Layers
 
+<<<<<<< HEAD
 ![Layers](layers-v1.svg)
 
 ### By directories
+=======
+| Package | Responsibility | Principal types |
+| --- | --- | --- |
+| `gui.openoffice` in `jabgui` | Present document actions, select styles, and show results. | `OpenOfficePanel`, `OpenOfficeCitationController`, `OpenOfficeDocumentConnection`, `CslStyleResolver` |
+| `logic.openoffice` | Shared citation identities, preferences, and Zotero protocol support. | `CitationIds`, `CitedEntryCollector`, `OpenOfficePreferences`, `ZoteroReferenceMark`, `ZoteroCitationLinker`, `ZoteroDocumentPreferences` |
+| `logic.openoffice.engine` | Coordinate document actions and compute renderer output. | `CitationEngine`, `UpdatePipeline`, `CitationGroupEditor`, `CitationFormatConverter`, `DocumentWriteSession`, `CitationRenderer` |
+| `logic.openoffice.engine.storage` | Read canonical citations and apply prepared text/property changes. | `MarkStore`, `CitationMarkerWriter`, `DocumentStyleStore`, `UndoableDocumentProperties` |
+| `logic.openoffice.frontend` | Combine the live document with the citation model, ordering, and overlap protection. | `DocumentCitations`, `DocumentOrder`, `RangeForOverlapCheck` |
+| `logic.openoffice.backend` | Work with concrete Writer reference-mark ranges without interpreting citation names. | `WriterReferenceMark`, `WriterReferenceMarks`, `ReferenceMarkTextWriter`, `WriterTextContext` |
+| `logic.openoffice.uno` | Access Writer services, interfaces, cursors, named content, and properties. | `UnoInterfaces`, `NamedTextContentInserter`, `NamedTextContentPlacement`, `NamedTextContentLookup`, `OOTextWriter` |
+| `logic.openoffice.rangesort` | Order UNO ranges and detect overlaps. | `RangeSort`, `RangeSortVisual`, `RestorableTextViewCursor`, `WithinSetRangeOverlapFinder`, `BetweenSetsRangeOverlapFinder` |
+| `logic.openoffice.style` | Define the common selectable-style contract and family-neutral Writer style names. | `OOStyle`, `WriterParagraphStyles` |
+| `logic.openoffice.jstyle` | Load JStyles and compute JStyle-specific citation and bibliography formatting. | `JStyle`, `JStyleLoader`, `JStyleCitationProcessor`, `JStyleBibliographyFormatter` |
+| `logic.openoffice.bst` | Load Writer BST styles, select citation notation, and convert BST output through Pandoc. | `BstStyle`, `BstStyleLoader`, `BstCitationFormat`, `BstEntryRenderer`, `PandocLatexConverter`, `BSTFormatUtils` |
+| `logic.openoffice.csl` | Adapt CSL output to Writer-ready text. | `CSLFormatUtils` |
+| `model.openoffice.style` | Represent citations, groups, resolved sources, and presentation state without UNO access. | `Citation`, `CitationGroup`, `CitationGroupId`, `CitationGroups`, `CitedReference`, `CitedReferences` |
+| `model.openoffice.ootext` | Describe formatted output independently of Writer. | `OOText`, `OOFormat` |
+| `model.openoffice.util` | Supply result types and collection helpers used across the integration. | `OOResult`, `OOVoidResult`, `OOListUtil` |
+
+Writer-specific family helpers are grouped in `jstyle`, `bst`, and `csl`; `style` contains common contracts and Writer paragraph-style identifiers.
+`WriterParagraphStyles` owns the neutral catalogs; CSL-aware default selection stays in `CSLFormatUtils`.
+`OOPreFormatter` belongs to `logic.layout.format`, shared by generic layouts and JStyle without depending on a citation family.
+Shared CSL style loading and metadata remain in `logic.citationstyle`, including `CitationStyle`, `CSLStyleLoader`, and `CSLStyleMetadata`.
+The `backend` package is concrete Writer infrastructure, not a family-specific citation backend interface.
+UNO access and range sorting belong to `logic`, not to the pure model packages.
+`JStyle` and `BstStyle` also belong in `logic`: they load and parse definitions and hold executable layouts or BST programs.
+`OOStyle` describes the selection contract for those logic implementations, while citation identities, groups, page information, and formatted-output values belong in `model`.
+>>>>>>> ecb8ff76cb (OpenOffice Backend re-architecture B - Package reorganization (#17918))
 
 * `model`
   * `util` : general utilities
@@ -86,9 +119,19 @@ The entry point for this processing is: `OOProcess.produceCitationMarkers`.
 
 It fills
 
+<<<<<<< HEAD
 * each `CitationGroup.citationMarker`
 * `CitationGroups.bibliography`
   * From bibliography `OOFormatBibliography.formatBibliography()` creates an `OOText` ready to be written to the document.
+=======
+`RendererFactory` selects `JStyleRenderer`, `CslRenderer`, or `BstRenderer` through `CitationRenderer`.
+A `RenderRequest` supplies groups in document order, libraries, and options; `RenderResult` contains formatted markers, requested bibliography paragraphs, and unresolved keys.
+`CitationKeyResolution` resolves keys using the request's library precedence and prepares resolved entry data without treating entry IDs as citation keys.
+`CitationNumbering` supplies shared numbering operations; each renderer applies its style-family ordering and label rules.
+Renderers compute output without writing to Writer.
+All three renderers and the package-private `BstCitationFormatter` remain in `logic.openoffice.engine`, alongside the render/action boundary.
+This keeps `CitationKeyResolution`, `BibliographyText`, and native CSL rendering internal to the engine rather than exposing them to family helper packages.
+>>>>>>> ecb8ff76cb (OpenOffice Backend re-architecture B - Package reorganization (#17918))
 
 ## logic/style
 
@@ -131,6 +174,7 @@ GUI-independent part of implementations of GUI actions.
 
 ## gui
 
+<<<<<<< HEAD
 * `OOError` : common error messages and dialog titles
   * adds `title` to `Jabrefexception`
   * converts from some common exception types using type-specific message
@@ -142,3 +186,65 @@ GUI-independent part of implementations of GUI actions.
     * catches all exceptions
     * shows error and warning dialogs
     * adds `enterUndoContext`, `leaveUndoContext` around action code
+=======
+`JStyle` exposes the formatting entry points:
+
+- `formatNumericCitation(...)` delegates to `JStyleNumericCitationFormatter`, including numeric-range formatting and page information.
+- `getNumCitationMarkerForBibliography(...)` delegates numeric bibliography labels to the same formatter.
+- `createCitationMarker(...)` and `getNormalizedCitationMarker(...)` delegate author-year and partial-type formatting to `JStyleCitationFormatter`.
+
+`JStyleRenderer` invokes the processor and uses `JStyleBibliographyFormatter.formatBibliographyEntry` for requested bibliography paragraphs before returning a `RenderResult`.
+JStyle bibliography paragraph styles are validated only when bibliography output is requested.
+The JStyle processors, formatters, and loaders live in `logic.openoffice.jstyle`.
+They use `logic.layout.format.OOPreFormatter` to convert LaTeX to Unicode and `OOText` tags for layout output; its registered layout name remains `OOPreFormatter`.
+`OOText` and `OOFormat` describe that output without depending on logic implementations; only the logic-layer `OOTextWriter` interprets it into Writer text.
+
+`OOStyle` in `logic.openoffice.style` is the common selectable-style interface for `JStyle`, `CitationStyle`, and `BstStyle`.
+`BstStyle`, `BstStyleLoader`, and `BstCitationFormat` live with the Pandoc conversion helpers in `logic.openoffice.bst`.
+`BstStyle.getBstVM()` exposes its cached parsed program rather than creating a new VM.
+BST whole-cited-set rendering and citation labels belong to `BstRenderer` and `BstCitationFormatter` in `logic.openoffice.engine`.
+BST supports `NORMAL` and `IN_TEXT` for all three notations: `NUMERIC`, `AUTHOR_YEAR`, and `STYLE_DEFINED`.
+In-text groups preserve storage order, pairing each source's Natbib-formatted short author list with its number, year, or style-defined label; repeated sources and unresolved placeholders retain their positions.
+For both normal and in-text groups, `AUTHOR_YEAR` without requested bibliography output skips BST source loading, VM execution, and Pandoc; numeric and style-defined notations still require BST execution for numbering, labels, and ordering.
+`CSLFormatUtils` in `logic.openoffice.csl` adapts CSL-generated markup rather than selecting a renderer or managing document citations.
+
+## Writer infrastructure and ordering
+
+`WriterReferenceMarks` creates and locates Writer marks without parsing their citation identities.
+`WriterReferenceMark` and `ReferenceMarkTextWriter` handle range boundaries and text replacement; `WriterTextContext` reads surrounding text for citation management.
+Canonical marks use persistent invisible boundaries, while native Zotero marks use temporary boundaries removed only when safe.
+
+The UNO package separates named-content operations:
+
+- `NamedTextContentPlacement` describes the document, name, range, and absorption choice for insertion.
+- `NamedTextContentInserter` creates and inserts named Writer content such as reference marks, bookmarks, and sections.
+- `NamedTextContentLookup` finds named content supporting `XTextContent`.
+- `UnoInterfaces.query` obtains an optional UNO interface through `UnoRuntime.queryInterface`; it is not a Java cast.
+
+`WriterOperationException` reports failures performing Writer operations, including service or named-content creation.
+`WriterDocumentAccessException` reports unavailable document or citation-range access.
+Other `Uno*` helpers provide cursor, text-section, property, redline, undo, and controller access; they do not choose citation styles.
+
+`DocumentOrder` coordinates citation-level ordering.
+`RangeSort` compares ranges within compatible text containers, while `RangeSortVisual` uses view-cursor coordinates.
+`RestorableTextViewCursor` obtains a usable view cursor and supports restoring its earlier position or selection.
+`WithinSetRangeOverlapFinder` detects overlaps within one range set; `BetweenSetsRangeOverlapFinder` checks between sets.
+`RangeForOverlapCheck` carries a protected range, its identity, and a description for overlap diagnostics.
+See the [ordering guide](order-of-appearance.md) for footnote mapping, merge adjacency, textual fallback, and visual-layout limitations.
+
+## Tests and further reading
+
+Unit tests mirror the GUI, engine, storage, style-family helpers, and Writer infrastructure packages.
+Under `jablib/src/test/java/org/jabref/logic/openoffice/`, `JStyle*` tests are in `jstyle`, `BstStyle*` tests are in `bst`, and `CSLFormatUtilsTest` is in `csl`.
+`OOPreFormatterTest` mirrors its shared formatter under `logic/layout/format/`; model markup tests remain under `model/openoffice/ootext/`.
+Package-relative JStyle fixtures live in `jablib/src/test/resources/org/jabref/logic/openoffice/jstyle/`; absolute built-in `/resource/openoffice/` paths are unchanged.
+`JabRefMarkCodecTest` checks the canonical codec; `JabRefMarkCodecCompatibilityTest` checks its storage boundary against legacy names.
+`BstCitationFormatterTest` exercises BST label/marker helpers, and `NonUndoableStylePropertiesTest` documents the ordinary style-property undo boundary.
+`JStyleTestHelper` supports JStyle formatting tests; `JabRefCliPreferencesTest` checks preference serialization and style persistence.
+
+Real-Writer acceptance tests live in `jablib/src/test/java/org/jabref/logic/openoffice/integration/`, with storage acceptance coverage in `engine/storage`.
+The [testing guide](../testing.md#libreoffice-writer-integration-tests) describes the safety gate, minimum invocation counts, and saved artifacts.
+Fixture details are in the [fixture README](https://github.com/JabRef/jabref/blob/main/jablib/src/test/resources/org/jabref/logic/openoffice/integration/README.md).
+For older design evidence, see the [historical problems page](problems.md).
+For repository orientation, see [JabRef on DeepWiki](https://deepwiki.com/JabRef/jabref).
+>>>>>>> ecb8ff76cb (OpenOffice Backend re-architecture B - Package reorganization (#17918))
