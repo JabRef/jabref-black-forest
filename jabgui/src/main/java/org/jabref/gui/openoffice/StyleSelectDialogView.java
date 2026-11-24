@@ -32,11 +32,17 @@ import org.jabref.logic.citationstyle.CitationStyle;
 import org.jabref.logic.journals.JournalAbbreviationRepository;
 import org.jabref.logic.l10n.Localization;
 import org.jabref.logic.openoffice.OpenOfficePreferences;
+<<<<<<< HEAD
 import org.jabref.logic.openoffice.style.BstCitationFormat;
 import org.jabref.logic.openoffice.style.BstStyle;
 import org.jabref.logic.openoffice.style.BstStyleLoader;
 import org.jabref.logic.openoffice.style.JStyle;
 import org.jabref.logic.openoffice.style.JStyleLoader;
+=======
+import org.jabref.logic.openoffice.bst.BstCitationFormat;
+import org.jabref.logic.openoffice.bst.BstStyleLoader;
+import org.jabref.logic.openoffice.jstyle.JStyleLoader;
+>>>>>>> ecb8ff76cb (OpenOffice Backend re-architecture B - Package reorganization (#17918))
 import org.jabref.logic.openoffice.style.OOStyle;
 import org.jabref.logic.preview.BstPreviewLayout;
 import org.jabref.logic.preview.CitationStylePreviewLayout;

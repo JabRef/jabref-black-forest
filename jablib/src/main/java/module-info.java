@@ -4,7 +4,14 @@
 ///
 /// Entry points: [org.jabref.model.database.BibDatabaseContext] (an open library),
 /// [org.jabref.model.entry.BibEntry], [org.jabref.logic.importer.ImportFormatReader],
+<<<<<<< HEAD
 /// [org.jabref.logic.exporter.ExporterFactory].
+=======
+/// [org.jabref.logic.exporter.ExporterFactory], and
+/// [org.jabref.logic.openoffice.engine.CitationEngine] (Writer citation actions).
+/// Writer style contracts live in [org.jabref.logic.openoffice.style]; family-specific helpers
+/// live in [org.jabref.logic.openoffice.bst], [org.jabref.logic.openoffice.csl], and [org.jabref.logic.openoffice.jstyle].
+>>>>>>> ecb8ff76cb (OpenOffice Backend re-architecture B - Package reorganization (#17918))
 ///
 /// @see <a href="https://devdocs.jabref.org/architecture-and-components.html">Architecture and components</a>
 open module org.jabref.jablib {
@@ -99,10 +106,20 @@ open module org.jabref.jablib {
     exports org.jabref.model.openoffice;
     exports org.jabref.logic.openoffice;
     exports org.jabref.logic.openoffice.bst;
+<<<<<<< HEAD
     exports org.jabref.logic.openoffice.action;
     exports org.jabref.logic.openoffice.frontend;
     exports org.jabref.logic.openoffice.oocsltext;
     exports org.jabref.model.openoffice.rangesort;
+=======
+    exports org.jabref.logic.openoffice.csl;
+    exports org.jabref.logic.openoffice.jstyle;
+
+    exports org.jabref.logic.openoffice.frontend;
+    exports org.jabref.logic.openoffice.engine;
+    exports org.jabref.logic.openoffice.engine.storage;
+    exports org.jabref.logic.openoffice.rangesort;
+>>>>>>> ecb8ff76cb (OpenOffice Backend re-architecture B - Package reorganization (#17918))
     exports org.jabref.model.openoffice.style;
     exports org.jabref.model.openoffice.uno;
     exports org.jabref.model.openoffice.util;

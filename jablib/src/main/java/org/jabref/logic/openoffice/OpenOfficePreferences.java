@@ -13,9 +13,14 @@ import javafx.collections.ObservableList;
 
 import org.jabref.logic.citationstyle.CSLStyleLoader;
 import org.jabref.logic.citationstyle.CitationStyle;
+<<<<<<< HEAD
 import org.jabref.logic.openoffice.oocsltext.CSLFormatUtils;
 import org.jabref.logic.openoffice.style.BstCitationFormat;
 import org.jabref.logic.openoffice.style.JStyleLoader;
+=======
+import org.jabref.logic.openoffice.bst.BstCitationFormat;
+import org.jabref.logic.openoffice.csl.CSLFormatUtils;
+>>>>>>> ecb8ff76cb (OpenOffice Backend re-architecture B - Package reorganization (#17918))
 import org.jabref.logic.openoffice.style.OOStyle;
 import org.jabref.logic.os.OS;
 import org.jabref.model.openoffice.style.CitationType;
